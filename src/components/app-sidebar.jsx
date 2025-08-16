@@ -1,4 +1,6 @@
-import * as React from "react"
+"use client";
+
+import * as React from "react";
 import {
   AudioWaveform,
   BookOpen,
@@ -10,21 +12,22 @@ import {
   PieChart,
   Settings2,
   SquareTerminal,
-} from "lucide-react"
+  BadgeDollarSign,
+  User
+} from "lucide-react";
 
-import { NavMain } from "@/components/nav-main"
-import { NavProjects } from "@/components/nav-projects"
-import { NavUser } from "@/components/nav-user"
-import { TeamSwitcher } from "@/components/team-switcher"
+import { NavMain } from "@/components/nav-main";
+import { NavProjects } from "@/components/nav-projects";
+import { NavUser } from "@/components/nav-user";
+import { TeamSwitcher } from "@/components/team-switcher";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
-} from "@/components/ui/sidebar"
-import { useSelector } from "react-redux"
-
+} from "@/components/ui/sidebar";
+import { useSelector } from "react-redux";
 
 // This is sample data.
 const data = {
@@ -39,62 +42,40 @@ const data = {
       logo: GalleryVerticalEnd,
       plan: "Enterprise",
     },
-
   ],
   navMain: [
     {
-      title: "Playground",
-      url: "#",
-      icon: SquareTerminal,
+      title: "Payments",
+      url: "",
+      icon: BadgeDollarSign,
       isActive: true,
       items: [
-        {
-          title: "History",
-          url: "/",
-        },
-        {
-          title: "Starred",
-          url: "#",
-        },
-        {
-          title: "Settings",
-          url: "#",
-        },
+      
       ],
     },
-    
-  ],
-  projects: [
     {
-      name: "Payer's List",
-      url: "/",
-      icon: Frame,
+      title: "Payers",
+      url: "/payers",
+      icon: User,
+      items: [
+
+      ],
     },
-    // {
-    //   name: "Sales & Marketing",
-    //   url: "#",
-    //   icon: PieChart,
-    // },
-    // {
-    //   name: "Travel",
-    //   url: "#",
-    //   icon: Map,
-    // },
+  
   ],
-}
+  
+};
 
-export function AppSidebar({
-  ...props
-}) {
-  const {userInfo} = useSelector((state)=> state.auth)
-
+export function AppSidebar({ ...props }) {
+  const { userInfo } = useSelector((state) => state.auth);
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
         <TeamSwitcher teams={data.teams} />
       </SidebarHeader>
       <SidebarContent>
-        <NavProjects projects={data.projects} />
+        <NavMain items={data.navMain} />
+        {/* <NavProjects projects={data.projects} /> */}
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={userInfo} />

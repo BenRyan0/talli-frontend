@@ -6,7 +6,10 @@ import { Bar, BarChart, ResponsiveContainer } from "recharts";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-import { addPayment } from "../../src/store/reducers/paymentReducer"; // import it
+import {
+  addPayment,
+  messageClear,
+} from "../../src/store/reducers/paymentReducer"; // import it
 import { Calendar28 } from "@/components/date-picker";
 
 import { Button } from "@/components/ui/button";
@@ -17,12 +20,14 @@ import {
   DrawerDescription,
   DrawerFooter,
   DrawerHeader,
+  DrawerOverlay,
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-// import { useDispatch } from "react-redux";
+
 import { PaymentMethodDropbox } from "./paymentMethod";
 import { useDispatch, useSelector } from "react-redux";
+import toast from "react-hot-toast";
 
 export function PaymentDrawer({
   open,
@@ -39,6 +44,8 @@ export function PaymentDrawer({
 
   const [value, setValue] = useState("");
 
+  const [passHighlight, setPassHighlight] = useState(false);
+
   const { successMessage, errorMessage } = useSelector(
     (state) => state.payment
   );
@@ -46,7 +53,11 @@ export function PaymentDrawer({
   const handleAddPayment = async (e) => {
     e.preventDefault();
     try {
-      console.log("NGIIII");
+      if (!value) {
+        toast.error("Payment Value is required");
+        setPassHighlight(true);
+        return;
+      }
 
       dispatch(
         addPayment({
@@ -62,12 +73,26 @@ export function PaymentDrawer({
   };
 
   useEffect(() => {
-    if (successMessage) {
-      console.log("Asdasd");
-    } else {
-      console.log("Asdasd");
+    if (value) {
+      setPassHighlight(false);
     }
-  }, [successMessage, errorMessage]);
+  }, [passHighlight, value]);
+
+  useEffect(() => {
+    if (successMessage) {
+      toast.success(successMessage);
+      dispatch(messageClear());
+      // messageClear()
+      setPayment("");
+      setValue("");
+      onOpenChange(false);
+    }
+    if (errorMessage) {
+      toast.error(errorMessage);
+      dispatch(messageClear());
+    }
+  }, [successMessage, errorMessage, dispatch, onOpenChange]);
+
   function formatNumberWithCommas(value) {
     const cleaned = value.replace(/\D/g, "");
     return cleaned.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -79,6 +104,7 @@ export function PaymentDrawer({
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
+      <DrawerOverlay />
       <DrawerContent className="h-[55vh] md:h-[60vh]">
         <div className="mx-auto w-full max-w-sm">
           <DrawerHeader>
@@ -86,22 +112,18 @@ export function PaymentDrawer({
             <DrawerDescription>
               Add payment for <strong>{selectedRow?.name || "someone"}</strong>
             </DrawerDescription>
-            <DrawerDescription>
-              <Calendar28
-                className="mt-2"
-                onDateChange={setSelectedDate}
-                value={selectedDate}
-              />
-
-              {/* <strong>{selectedDate  || "please select date"}</strong> */}
-            </DrawerDescription>
+            <Calendar28
+              className="mt-2 "
+              onDateChange={setSelectedDate}
+              value={selectedDate}
+            />
           </DrawerHeader>
           <div className="p-4 pb-0 mt-3">
             <form onSubmit={handleAddPayment}>
               <div className="flex flex-col  gap-6 text-slate-100">
                 <div className="flex gap-2">
                   <div className="grid gap-3">
-                    <Label htmlFor="email">Email</Label>
+                    <Label htmlFor="email">Amount</Label>
                     <Input
                       id="payment"
                       type="text"
@@ -120,20 +142,21 @@ export function PaymentDrawer({
                     />
                   </div>
                   <div className="grid gap-3">
-                    <Label htmlFor="email">Email</Label>
-                    <PaymentMethodDropbox value={value} setValue={setValue} />
+                    <Label htmlFor="email">
+                      Method {passHighlight ? "!!!" : ""}
+                    </Label>
+                    <PaymentMethodDropbox
+                      value={value}
+                      setValue={setValue}
+                      passHighlight={passHighlight}
+                    />
                   </div>
                 </div>
 
                 {error && <div className="text-red-500 text-sm">{error}</div>}
                 <div className="flex flex-col gap-3">
-                  {/* <Button
-                    type="submit"
-                    className="w-full bg-slate-100 text-gray-700 font-bold hover:bg-cyan-500 hover:text-white transition-all duration-300"
-                  >
-                    Login
-                  </Button> */}
                   <Button
+                    type="submit"
                     onClick={() =>
                       console.log("Submit payment for:", selectedRow)
                     }

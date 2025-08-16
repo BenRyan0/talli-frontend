@@ -44,18 +44,18 @@ const frameworks = [
 
 // "cash", "gcash","paymaya", "bank transfer", "other"
 
-export function PaymentMethodDropbox({value, setValue}) {
+export function PaymentMethodDropbox({value, setValue,passHighlight}) {
   const [open, setOpen] = React.useState(false)
 //   const [value, setValue] = React.useState("")
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover open={open} onOpenChange={setOpen} modal={false}>
       <PopoverTrigger asChild>
         <Button
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-[200px] justify-between"
+          className={`w-[200px] justify-between border-2  ${passHighlight ? "border-red-500" : ""}`}
         >
           {value
             ? frameworks.find((framework) => framework.value === value)?.label
@@ -63,7 +63,9 @@ export function PaymentMethodDropbox({value, setValue}) {
           <ChevronsUpDown className="opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
+      <PopoverContent className="w-[200px] p-0"
+      onCloseAutoFocus={(e) => e.preventDefault()}
+      >
         <Command>
           <CommandInput placeholder="Search framework..." className="h-9" />
           <CommandList>

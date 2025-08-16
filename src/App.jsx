@@ -5,6 +5,8 @@ import Main from "./layout/main";
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 import UserPaymentsList from "./pages/UserPaymentsList";
+import PayersList from "./pages/PayersList";
+import PayerProgress from "./pages/PayerProgress";
 import ProtectUser from "./utils/ProtectUser";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -30,6 +32,8 @@ function App() {
           <Route element={<Main />}>
             {/* <Route path="/" element={<Dashboard />} /> */}
             <Route path="/" element={<UserPaymentsList />} />
+            <Route path="/payers" element={<PayersList />} />
+            <Route path="/view-progress/:payerId" element={<PayerProgress />} />
           </Route>
         </Route>
       </Routes>

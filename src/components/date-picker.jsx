@@ -52,20 +52,20 @@ export function Calendar28({ onDateChange, value }) {
   return (
     <div className="flex flex-col gap-3">
       <div className="relative flex gap-2">
-      <Input
-  value={formattedDate}
-  placeholder={formattedDate}
-  onChange={(e) => {
-    const newDate = new Date(e.target.value);
-    handleDateChange(newDate);
-  }}
-  onKeyDown={(e) => {
-    if (e.key === "ArrowDown") {
-      e.preventDefault();
-      setOpen(true);
-    }
-  }}
-/>
+        <Input
+          value={formattedDate}
+          placeholder={formattedDate}
+          onChange={(e) => {
+            const newDate = new Date(e.target.value);
+            handleDateChange(newDate);
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "ArrowDown") {
+              e.preventDefault();
+              setOpen(true);
+            }
+          }}
+        />
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
             <Button
@@ -84,18 +84,18 @@ export function Calendar28({ onDateChange, value }) {
             sideOffset={10}
           >
             <Calendar
-  mode="single"
-  selected={date}
-  month={month}
-  onMonthChange={setMonth}
-  onSelect={(selectedDate) => {
-    if (selectedDate) {
-      handleDateChange(selectedDate);
-      setMonth(selectedDate);
-      setOpen(false);
-    }
-  }}
-/>
+              mode="single"
+              selected={date}
+              month={month}
+              onMonthChange={setMonth}
+              onSelect={(selectedDate) => {
+                if (selectedDate) {
+                  handleDateChange(selectedDate);
+                  setMonth(selectedDate);
+                  setOpen(false);
+                }
+              }}
+            />
           </PopoverContent>
         </Popover>
       </div>

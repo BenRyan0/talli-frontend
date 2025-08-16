@@ -12,7 +12,7 @@ import {
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Calendar28 } from "@/components/date-picker";
+
 
 import {
   Table,
@@ -28,19 +28,19 @@ import { PaymentDrawer } from "@/components/payment-add-form";
 /**
  * @param {{ columns: any[], data: any[] }} props
  */
-export function DataTable({ columns, data ,setSelectedDate,selectedDate,toDeleteRow,setToDeleteRow}) {
+export function PayersTable({ columns, data ,setSelectedDate,selectedDate,selectedRow, setSelectedRow,toDeleteRow, setToDeleteRow}) {
   const [sorting, setSorting] = React.useState([]);
   const [columnFilters, setColumnFilters] = React.useState([]);
-    const [drawerOpen, setDrawerOpen] = useState(false);
-  const [selectedRow, setSelectedRow] = useState(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  // const [selectedRow, setSelectedRow] = useState(null);
 
-  
+
 
 
 
   const table = useReactTable({
-    data,
-   columns: columns(setDrawerOpen, setSelectedRow,toDeleteRow,setToDeleteRow), 
+   data,
+   columns: columns(setDrawerOpen, setSelectedRow,selectedRow,toDeleteRow, setToDeleteRow), 
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -56,25 +56,17 @@ export function DataTable({ columns, data ,setSelectedDate,selectedDate,toDelete
   // const [selectedDate] = useState(null);
 
   return (
-    <div className="w-full">
+    <div>
       {/* Filter + Calendar */}
-      <div className="flex flex-col-reverse gap-3 md:flex-row justify-center items-center md:justify-between py-4 md:items-end ">
+      <div className="flex py-2 items-end justify-end">
         <Input
-          placeholder="Search Name..."
+          placeholder="Search Payers Name..."
           value={table.getColumn("name")?.getFilterValue() || ""}
           onChange={(event) =>
             table.getColumn("name")?.setFilterValue(event.target.value)
           }
-          className="lg:max-w-sm max-w-full"
+          className="lg:max-w-xs max-w-full mb-2"
         />
-
-        <div className="self-end flex md:flex-col justify-between items-center md:items-end w-full md:w-fit">
-          <h1 className="text-sm font-bold text-end pr-2 md:mb-1 ">
-            {selectedDate?.toLocaleDateString("en-US", { weekday: "long" }) || "None"}
-          </h1>
-         <Calendar28 onDateChange={setSelectedDate} value={selectedDate} />
-
-        </div>
       </div>
 
       {/* Table */}
@@ -111,7 +103,7 @@ export function DataTable({ columns, data ,setSelectedDate,selectedDate,toDelete
             ) : (
               <TableRow>
                 <TableCell colSpan={columns.length} className="h-24 text-center">
-                  No results.
+                  No Payers yet.
                 </TableCell>
               </TableRow>
             )}
