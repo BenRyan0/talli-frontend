@@ -21,7 +21,7 @@ export function PayerAddForm({
   onOpenChange,
   isEditing,
   selectedRow,
-  // setIsEditing,
+  setIsEditing,
   setSelectedRow
 }) {
   const dispatch = useDispatch();
@@ -40,35 +40,51 @@ export function PayerAddForm({
 
   const { successMessage, errorMessage } = useSelector((state) => state.payer);
 
-  const handleAddPayer = async (e) => {
-    e.preventDefault();
-    try {
-      if (!payersInfo.name || !payersInfo.contact) {
-        toast.error("Name and Contact Info is Required");
-        // setPassHighlight(true);
-        return;
-      }
+const handleAddPayer = async (e) => {
+  e.preventDefault();
 
-      if (isEditing) {
-        dispatch(
-          updatePayer({
-            name: payersInfo.name,
-            contact: payersInfo.contact,
-            id: selectedRow._id
-          })
-        );
-      } else {
-        dispatch(
-          addPayer({
-            name: payersInfo.name,
-            contact: payersInfo.contact,
-          })
-        );
-      }
-    } catch (err) {
-      setError(err);
+  if (!payersInfo.name || !payersInfo.contact) {
+    toast.error("Name and Contact Info is Required");
+    return;
+  }
+
+  // Validate contact number format
+  const contactPattern = /^09\d{9}$/; // must start with 09 and have 11 digits
+  if (!contactPattern.test(payersInfo.contact)) {
+    toast.error("Contact must be a valid PH mobile number (e.g., 09758975701)");
+    return;
+  }
+
+  try {
+    if (isEditing) {
+      await dispatch(
+        updatePayer({
+          id: selectedRow._id,
+          name: payersInfo.name.trim(),
+          contact: payersInfo.contact.trim(),
+        })
+      ).unwrap();
+      // toast.success("Payer updated successfully!");
+    } else {
+      await dispatch(
+        addPayer({
+          name: payersInfo.name.trim(),
+          contact: payersInfo.contact.trim(),
+        })
+      ).unwrap();
+      // toast.success("Payer added successfully!");
     }
-  };
+
+    // Reset state after success
+    setPayersInfo({ name: "", contact: "" });
+    setIsEditing(false);
+  } catch (err) {
+    console.error(err);
+    setError(err)
+    toast.error(err.message || "Something went wrong");
+  }
+};
+
 
   useEffect(() => {
     if (successMessage) {

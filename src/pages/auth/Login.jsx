@@ -1,34 +1,20 @@
-import React, { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom"; // fixed from react-router
+import React from "react";
+// import { useSelector, useDispatch } from "react-redux";
+// import { useNavigate } from "react-router-dom"; // fixed from react-router
 // import { toast } from "react-toastify";
 
 import { LoginForm } from "../../components/login-form";
-import { messageClear} from "../../store/reducers/authReducer"; // Make sure this path is correct
+// import { messageClear} from "../../store/reducers/authReducer"; // Make sure this path is correct
 
 const Login = () => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+  // const dispatch = useDispatch();
+  // const navigate = useNavigate();
 
-  const { userInfo, successMessage, errorMessage, redirect } = useSelector(
-    (state) => state.auth
-  );
+  // const { userInfo, successMessage, errorMessage, redirect } = useSelector(
+  //   (state) => state.auth
+  // );
 
-  useEffect(() => {
-    if (successMessage) {
-      // toast.success(successMessage);
-      dispatch(messageClear());
-       navigate("/");
-    }
-    if (errorMessage) {
-      // toast.error(errorMessage);
-      dispatch(messageClear());
-    }
-    if (userInfo) {
-      navigate("/");
-    } 
-    
-  }, [successMessage, errorMessage, userInfo, redirect, navigate, dispatch]);
+
 
   const handleSuccessLogin = (data) => {
     console.log("Success from login.jsx:", data);

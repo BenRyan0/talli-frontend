@@ -11,6 +11,7 @@ function isValidDate(date) {
 }
 
 export function MonthPicker({ onMonthChange, value,selectedMonthYear }) {
+
   const initialDate = value && isValidDate(value) ? value : new Date();
 
   const [open, setOpen] = useState(false);

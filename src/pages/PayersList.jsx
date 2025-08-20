@@ -6,6 +6,8 @@ import { getMyPayers } from ".././store/reducers/paymentReducer";
 import { payersColumns } from "../app/payments/payers-columns";
 import { PayersTable } from "../app/payments/payers-table";
 import { PayerAddForm } from "./../components/user-add-form";
+import DeleteAlertDialog from "./../components/custom/alertDialog";
+import { removePayer } from "@/store/reducers/payerReducer";
 
 const PayersList = () => {
   const dispatch = useDispatch();
@@ -16,13 +18,13 @@ const PayersList = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
 
   // isEditing State
-  const [isEditing, setIsEditing] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
 
   const [toDeleteRow, setToDeleteRow] = useState(null);
 
-  console.log(toDeleteRow)
-  console.log("toDeleteRow")
+  console.log(toDeleteRow);
+  console.log("toDeleteRow");
 
   useEffect(() => {
     if (userInfo) {
@@ -34,6 +36,12 @@ const PayersList = () => {
     console.log("Selected date from child:", selectedDate);
     setSelectedDate(selectedDate);
   }, [selectedDate]);
+
+  function handleDelete(payerId) {
+    // perform your deletion logic (API call, state update…)
+    dispatch(removePayer(payerId))
+    console.log("Deleting payer with id:", payerId);
+  }
 
   return (
     <div className="w-full h-full p-3">
@@ -49,6 +57,7 @@ const PayersList = () => {
             setSelectedRow={setSelectedRow}
             toDeleteRow={toDeleteRow}
             setToDeleteRow={setToDeleteRow}
+            handleDelete={handleDelete}
           />
         </div>
         <div className="lg:col-span-4 flex justify-center items-center">
@@ -57,8 +66,22 @@ const PayersList = () => {
             setIsEditing={setIsEditing}
             selectedRow={selectedRow}
             setSelectedRow={setSelectedRow}
+            
           />
         </div>
+      </div>
+
+      <div className="">
+        <DeleteAlertDialog
+          isOpen={Boolean(toDeleteRow)}
+          title="Delete Payer"
+          message={`Really delete ${toDeleteRow?.name}?`}
+          onConfirm={() => {
+            handleDelete(toDeleteRow._id);
+            setToDeleteRow(null);
+          }}
+          onCancel={() => setToDeleteRow(null)}
+        />
       </div>
     </div>
   );

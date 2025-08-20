@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Eye, EyeOff } from "lucide-react";
@@ -11,12 +11,18 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+// import { Button } from "@/components/ui/button";
 
 import { login } from "../../src/store/reducers/authReducer"; // import it
+import toast from "react-hot-toast";
+import { messageClear} from "../store/reducers/authReducer"; // Make sure this path is correct
+import { useNavigate } from "react-router";
 
 export function LoginForm({ className, ...props }) {
   const dispatch = useDispatch();
+    const navigate = useNavigate();
+
 
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
@@ -26,15 +32,32 @@ export function LoginForm({ className, ...props }) {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      console.log("NGIIII");
-      console.log("Email:", email);
-      console.log("Password:", password);
-
       dispatch(login({ Credential: { email, password } }));
     } catch (err) {
       setError(err);
     }
   };
+  
+
+    const { userInfo, successMessage, errorMessage, redirect } = useSelector(
+    (state) => state.auth
+  );
+
+    useEffect(() => {
+    if (successMessage) {
+      toast.success(successMessage);
+      dispatch(messageClear());
+       navigate("/");
+    }
+    if (errorMessage) {
+      toast.error(errorMessage);
+      dispatch(messageClear());
+    }
+    if (userInfo) {
+      navigate("/");
+    } 
+    
+  }, [successMessage, errorMessage, userInfo, redirect, navigate, dispatch]);
 
   return (
     <div className={cn("flex flex-col gap-6 mx-4 md:mx-0")} {...props}>
@@ -87,7 +110,7 @@ export function LoginForm({ className, ...props }) {
               <div className="flex flex-col gap-3">
                 <Button
                   type="submit"
-                  className="w-full bg-slate-100 text-gray-700 font-bold hover:bg-cyan-500 hover:text-white transition-all duration-300"
+                  className="w-full bg-slate-100 text-gray-700 font-bold hover:bg-purple-500 hover:text-white transition-all duration-300"
                 >
                   Login
                 </Button>

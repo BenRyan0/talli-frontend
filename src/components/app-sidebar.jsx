@@ -38,9 +38,9 @@ const data = {
   },
   teams: [
     {
-      name: "Acme Inc",
+      name: "TALLI",
       logo: GalleryVerticalEnd,
-      plan: "Enterprise",
+      plan: "rinco.tech",
     },
   ],
   navMain: [

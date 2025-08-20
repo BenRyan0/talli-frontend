@@ -2,14 +2,61 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../../api/api";
 import { jwtDecode } from "jwt-decode"; // ✅ correct named import
 
+export const userLogout = createAsyncThunk(
+  "auth/userLogout",
+  async (_,{ rejectWithValue, fulfillWithValue,getState }) => {
+  const { token } = getState().auth;
+    const config = {
+      headers: {
+        authorization: `Bearer ${token}`,
+      },
+    };
+ 
+    try {
+         const { data } = await api.get('/auth/user-logout', config)
+         localStorage.removeItem("accessToken");
+
+         console.log("LOGOUT ---------------------")
+
+      return fulfillWithValue(data);
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+
+
+export const ChangeUserPassWord = createAsyncThunk(
+  "auth/ChangeUserPassword",
+  async ({ Credential }, { fulfillWithValue, rejectWithValue, getState}) => {
+    const { token } = getState().auth;
+    const config = {
+      headers: {
+        authorization: `Bearer ${token}`,
+      },
+    };
+ 
+    try {
+      const { data } = await api.post("/auth/change-user-password", Credential, config);
+      console.log("Change Password ----------------------");
+      console.log(data);
+
+      localStorage.setItem("accessToken", data.token);
+
+      return fulfillWithValue(data);
+    } catch (err) {
+      console.log(err);
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
 export const login = createAsyncThunk(
   "auth/login",
   async ({ Credential }, { fulfillWithValue, rejectWithValue }) => {
-    console.log(Credential);
     try {
       const { data } = await api.post("/auth/login", Credential);
-      console.log("LOGIN ----------------------");
-      console.log(data);
+      console.log(data)
 
       localStorage.setItem("accessToken", data.token);
 
@@ -42,30 +89,30 @@ const decodedToken = (token) => {
   }
 };
 
-export const get_user_info = createAsyncThunk(
-  "auth/get_user_info",
-  async (_, { rejectWithValue, fulfillWithValue, getState }) => {
-    const { token } = getState().auth;
-    const config = {
-      headers: {
-        authorization: `Bearer ${token}`,
-      },
-    };
+// export const get_user_info = createAsyncThunk(
+//   "auth/get_user_info",
+//   async (_, { rejectWithValue, fulfillWithValue, getState }) => {
+//     const { token } = getState().auth;
+//     const config = {
+//       headers: {
+//         authorization: `Bearer ${token}`,
+//       },
+//     };
 
-    console.log(config);
-    // const token = localStorage.getItem("accessToken");
-    if (token === "undefined") {
-      return rejectWithValue("No token found. Please log in.");
-    }
-    try {
-      const { data } = await api.get(`/auth/get-user`, config);
-      // const { data } = await axios.get("/get-user", config);
-      return fulfillWithValue(data);
-    } catch (error) {
-      return rejectWithValue(error.response?.data || "Unknown error");
-    }
-  }
-);
+//     console.log(config);
+//     // const token = localStorage.getItem("accessToken");
+//     if (token === "undefined") {
+//       return rejectWithValue("No token found. Please log in.");
+//     }
+//     try {
+//       const { data } = await api.get(`/auth/get-user`, config);
+//       // const { data } = await axios.get("/get-user", config);
+//       return fulfillWithValue(data);
+//     } catch (error) {
+//       return rejectWithValue(error.response?.data || "Unknown error");
+//     }
+//   }
+// );
 
 export const authReducer = createSlice({
   name: "auth",
@@ -103,20 +150,34 @@ export const authReducer = createSlice({
     });
     builder.addCase(login.rejected, (state, action) => {
       state.loader = false;
-      state.successMessage = action.payload.error;
+      state.errorMessage = action.payload.error;
       // console.log("Login failed:", action.payload.error);
     });
 
-    builder.addCase(get_user_info.pending, (state) => {
+    // builder.addCase(get_user_info.pending, (state) => {
+    //   state.loader = true;
+    // });
+    // builder.addCase(get_user_info.rejected, (state, action) => {
+    //   state.loader = false;
+    //   state.errorMessage = action.payload || "Failed to fetch user info";
+    // });
+    // builder.addCase(get_user_info.fulfilled, (state, action) => {
+    //   state.loader = false;
+    //   state.userInfo = action.payload.userInfo;
+
+    // });
+
+
+    builder.addCase(userLogout.pending, (state) => {
       state.loader = true;
     });
-    builder.addCase(get_user_info.rejected, (state, action) => {
+    builder.addCase(userLogout.rejected, (state, action) => {
       state.loader = false;
       state.errorMessage = action.payload || "Failed to fetch user info";
     });
-    builder.addCase(get_user_info.fulfilled, (state, action) => {
+    builder.addCase(userLogout.fulfilled, (state) => {
       state.loader = false;
-      state.userInfo = action.payload.userInfo;
+      state.userInfo = ""
 
     });
   },
