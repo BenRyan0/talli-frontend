@@ -55,7 +55,7 @@ export function PaymentMethodDropbox({value, setValue,passHighlight}) {
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className={`w-[200px] justify-between border-2  ${passHighlight ? "border-red-500" : ""}`}
+          className={`w-full justify-between border-2  ${passHighlight ? "border-red-500" : ""}`}
         >
           {value
             ? frameworks.find((framework) => framework.value === value)?.label

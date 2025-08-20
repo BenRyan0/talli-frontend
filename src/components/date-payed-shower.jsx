@@ -7,11 +7,17 @@ const PaymentCalendar = ({
   totalPaidDays,
   totalAmount,
   payer,
+  setDrawerOpen,
+  // selectedPayment,
+  setSelectedPayment,
 }) => {
   // Prevent crash if allDates is undefined or empty
   if (!allDates || allDates.length === 0) {
     return <div className="p-4">Loading calendar...</div>;
   }
+
+  console.log(payer)
+  console.log("payer")
 
   // Compute blanks before the 1st of the month
   const firstDayIndex = new Date(allDates[0].date).getDay(); // 0 = Sun, ... 6 = Sat
@@ -109,8 +115,15 @@ const PaymentCalendar = ({
           return (
             <div
               key={day.date}
+              onClick={() => {
+                if (paid) {
+                  // ✅ only trigger when paid is true
+                  setDrawerOpen(true);
+                  setSelectedPayment({day,payer});
+                }
+              }}
               className={`
-    h-16 rounded flex flex-col items-center justify-between text-sm border-none relative text-center
+    h-16 rounded flex flex-col items-center justify-between text-sm border-none relative text-center 
     ${
       day.date === todayString
         ? " animate-pulse-border-purple bg-gradient-to-t to-transparent from-purple-500 hover:from-purple-600 transition-colors duration-300 ease-in-out"

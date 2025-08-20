@@ -6,13 +6,12 @@ import {
   BadgeCheck,
   CircleAlert,
   CalendarIcon,
-  EllipsisVertical
+  EllipsisVertical,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
 export const columns = (setDrawerOpen, setSelectedRow) => [
-
   {
     accessorKey: "name",
     header: ({ column }) => (
@@ -32,9 +31,8 @@ export const columns = (setDrawerOpen, setSelectedRow) => [
       const isPaid = row.getValue("paymentMade"); // or rowData.paymentMade
       // const details = row.getValue("paymentDetails"); // or rowData.paymentMade
 
-
-      console.log(rowData)
-      console.log("rowData")
+      console.log(rowData);
+      console.log("rowData");
       return (
         <div className="text-wrap items-center gap-5 flex justify-between ">
           <span>{value}</span>
@@ -52,14 +50,11 @@ export const columns = (setDrawerOpen, setSelectedRow) => [
               <div className="flex gap-1 justify-start items-center w-[50px] text-green-200">
                 <BadgeCheck />
                 {/* Paid */}
-                {
-                  
-                  rowData.paymentDetails?  (
-                    <div className="">{rowData.paymentDetails.amount} </div>
-                  ):(
-                    <div className="">asd</div>
-                  )
-                }
+                {rowData.paymentDetails ? (
+                  <div className="">{rowData.paymentDetails.amount}</div>
+                ) : (
+                  <div className="">asd</div>
+                )}
                 {/* {details.amount} */}
               </div>
             ) : (
@@ -86,18 +81,23 @@ export const columns = (setDrawerOpen, setSelectedRow) => [
         </Button>
       </div>
     ),
-    cell: ({ row }) =>
-      row.getValue("paymentMade") ? (
-        <div className="hidden md:flex  gap-1 justify-center items-center w-fit text-green-200 ">
+    cell: ({ row }) => {
+      const rowData = row.original;
+      const isPaid = row.getValue("paymentMade");
+
+      return isPaid ? (
+        <div className="hidden md:flex gap-1 justify-center items-center w-fit text-green-200">
           <BadgeCheck size={20} />
+          <span>{rowData.paymentDetails?.amount}</span>
           Paid
         </div>
       ) : (
-        <div className="hidden md:flex  gap-1 justify-center items-center w-fit text-orange-300">
+        <div className="hidden md:flex gap-1 justify-center items-center w-fit text-orange-300">
           <CircleAlert size={20} />
-          Not Payed
+          Not Paid
         </div>
-      ),
+      );
+    },
   },
   {
     accessorKey: "monthlyProgress",
@@ -152,11 +152,22 @@ export const columns = (setDrawerOpen, setSelectedRow) => [
     cell: ({ row }) => {
       const rowData = row.original;
       const isPaid = row.getValue("paymentMade"); // or rowData.paymentMade
-      
+
       return (
         <div className="flex gap-2">
-            <Button className={"md:hidden block bg-transparent outline-0 border-0 hover:bg-transparent"} variant="outline" size="xs">
-            <a className="py-1 px-2 rounded-sm border-2" href={`/view-progress/${rowData._id}`}>MORE</a>
+          <Button
+            className={
+              "md:hidden block bg-transparent outline-0 border-0 hover:bg-transparent"
+            }
+            variant="outline"
+            size="xs"
+          >
+            <a
+              className="py-1 px-2 rounded-sm border-2"
+              href={`/view-progress/${rowData._id}`}
+            >
+              MORE
+            </a>
           </Button>
           <Button
             // className={`hidden md:block ${isPaid ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}`}

@@ -5,11 +5,18 @@ import { getMyPayersPayment } from "../store/reducers/paymentReducer";
 import PaymentCalendar from "../components/date-payed-shower";
 import { MonthPicker } from "../components/month-picker";
 import { ChartBarStacked } from "../components/charts/bar-chart";
+import { EditPaymentDrawer } from "./../components/payment-edit-form";
 
 const PayerProgress = () => {
   const dispatch = useDispatch();
   const { payerId } = useParams();
   const hasFetched = useRef(false);
+
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [selectedPayment, setSelectedPayment] = useState(null);
+  console.log(selectedPayment);
+  console.log("selectedPayment");
+  // const [setSelectedDate,selectedDate] = useState(null);
 
   const {
     totalPayments,
@@ -91,6 +98,9 @@ const PayerProgress = () => {
               </div>
             </div>
             <PaymentCalendar
+              selectedPayment={selectedPayment}
+              setSelectedPayment={setSelectedPayment}
+              setDrawerOpen={setDrawerOpen}
               totalPayments={totalPayments}
               totalPaidDays={totalPaidDays}
               totalAmount={totalAmount}
@@ -106,12 +116,22 @@ const PayerProgress = () => {
         <div className="w-full h-full flex justify-center items-center gap-2">
           <div className="w-full">
             {chartData ? <div className=""></div> : <div className=""></div>}
-            <ChartBarStacked chartData={chartData} selectedMonthYear={selectedMonthYear} />
+            <ChartBarStacked
+              chartData={chartData}
+              selectedMonthYear={selectedMonthYear}
+            />
           </div>
-          
-
         </div>
       </div>
+
+      <EditPaymentDrawer
+        open={drawerOpen}
+        onOpenChange={setDrawerOpen}
+        selectedPayment={selectedPayment}
+        // selectedRow={selectedRow}
+        // selectedDate={selectedDate}
+        // setSelectedDate={setSelectedDate}
+      />
     </div>
   );
 };
